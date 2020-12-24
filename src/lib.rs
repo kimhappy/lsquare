@@ -12,12 +12,12 @@ impl< T > Domain for T where T: Scalar + Num + AddAssign + MulAssign + ComplexFi
 pub trait Function< T, const N: usize > where T: Domain {
     fn var(x: T) -> [T; N];
 
-    fn function(coefficients: [T; N]) -> Box< dyn Fn(T) -> T > {
-        Box::new(move |x: T| {
+    fn function(coefficients: [T; N]) -> impl Fn(T) -> T {
+        move |x: T| {
             let lhs = DVector::from(coefficients.to_vec());
             let rhs = DVector::from(Self::var(x).to_vec());
             Matrix::dot(&lhs, &rhs)
-        })
+        }
     }
 
     fn eval(coefficients: [T; N], x: T) -> T {
